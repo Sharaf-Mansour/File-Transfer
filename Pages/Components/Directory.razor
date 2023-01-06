@@ -1,0 +1,75 @@
+﻿@page "/FileTransfare/Folders/{directory}"
+
+<style>
+    li:hover {
+        background-color: #ccc;
+        transition: 0.2s ease-in-out;
+    }
+</style>
+
+<header class="d-flex justify-content-between align-items-center">
+    <h3>@directory</h3>
+    <a class="btn btn-secondary" href="FileTransfare">Back</a>
+</header>
+
+@if( Files?.Count is null or 0)
+{
+    <p>There are no files to show.</p>
+}
+else
+{
+    <ul class="d-flex gap-4 mt-5 list-unstyled"> 
+        @foreach (var file in Files)
+        {
+            @if(directory is "Images")
+            {
+                <li class="w-25">
+                    <a download class="shadow-sm card-link text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3"
+           href="SharedFiles/@directory/@file"
+                    
+                    >
+                        <img class="card-img" src="SharedFiles/@directory/@file" alt="@(file ?? "Image has a problem")" loading="lazy"/>
+                    </a>
+                </li>
+            }
+            else if(directory is "Videos")
+            {
+                <li class="w-25">
+                    <a class="shadow-sm card-link text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3" 
+                        href="SharedFiles/@directory/@file">
+                        <video class="w-100" controls src="SharedFiles/@directory/@file"></video>
+                    </a>
+                </li>
+            }
+            else if(directory is "Audios")
+            {
+                <li class="w-25">
+                    <a class="shadow-sm card-link text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3" 
+                        href="SharedFiles/@directory/@file">
+                        <audio class="w-100" controls src="SharedFiles/@directory/@file"></audio>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="my-5 card">
+                
+                    <a class="shadow-sm card-link text-black rounded-2 p-4 text-decoration-none d-flex align-items-baseline gap-3 pe-5" 
+                        download
+                        href="SharedFiles/@directory/@file">
+                        <span class="oi oi-file"></span>
+                        <span class="card-text">@file</span>
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+}
+@code
+{
+    [Parameter]
+    public string? directory { get; set; }
+    private List<string> Files { get; set; } = new();
+    protected override void OnInitialized()  =>
+    Files = FileTransfareService.GetFiles(directory?? throw new NullReferenceException("Could not find directory please create it!"));
+}

@@ -1,0 +1,80 @@
+@page "/FileTransfare/UploadFiles"
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
+
+<PageTitle>Upload Files</PageTitle>
+
+<style>
+    button {
+        bottom: 50px;
+        right: 50px;
+    }
+
+    .back-blur {
+        z-index: 5;
+    }
+</style>
+
+
+@if(isUpload)
+{
+    <div class="back-blur position-absolute w-100 min-vh-100 top-0 end-0 shadow-lg">
+        <div class="w-100 min-vh-100 bg-black bg-opacity-25 position-absolute top-0 start-0" @onclick="@(() => isUpload = false)"></div>
+        <div class="position-absolute w-50 h-25 start-50 top-50 translate-middle bg-white rounded-3 card-body">
+            <br />
+            <br />
+            <div class="d-flex justify-content-center align-items-baseline gap-4">
+                <label for="choose-file" class="form-label">
+                    <InputFile OnChange="OnInputFileChange" id="choose-file" class="form-control" multiple />
+                </label>
+                <button class="btn btn-primary p-2 px-4" @onclick="Upload">Upload</button>
+                <button class="btn btn-danger p-2 px-4" @onclick="Cancel">Cancel</button>
+                @if(string.IsNullOrEmpty(Error))
+                {
+                    <br>
+                    <p>@Error</p>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<button class="btn btn-primary position-fixed p-3 px-4 rounded-circle"
+    @onclick="@(() => isUpload = true)">
+    <big>
+        <span class="oi oi-arrow-thick-top"></span>
+    </big>
+</button>
+
+@code {
+    private bool isUpload { get; set; }
+    private string? dirSelected { get; set; }
+    private List<string> directories = Array.Empty<string>().AsList();
+    private string? Error { get; set; } = string.Empty;
+    IReadOnlyList<IBrowserFile> SelectedImage = Array.Empty<IBrowserFile>();
+
+    protected override void OnInitialized()
+    => directories = FileTransfareService.GetDirectories() 
+    ?? Array.Empty<string>().AsList();
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        SelectedImage = e.GetMultipleFiles(Int32.MaxValue);
+        StateHasChanged();
+    }
+
+    private void Cancel()=>  isUpload = false;
+    
+    private async Task Upload()
+    {
+        foreach(var file in SelectedImage)
+        {
+            using var stream = file.OpenReadStream(Int64.MaxValue);
+            dirSelected = file.ContentType.Split("/")[0] + 's';
+            using var fs = File.Create($"{env.WebRootPath}\\Sharedfiles\\{dirSelected}\\{file.Name}");
+            await stream.CopyToAsync(fs);
+            fs.Close();
+        }
+        isUpload = false;
+        StateHasChanged();
+    }
+}
