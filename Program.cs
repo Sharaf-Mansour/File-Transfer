@@ -8,8 +8,8 @@ builder.Services.AddRazorPages()
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-    app.UseExceptionHandler("/Error");
+//if (!app.Environment.IsDevelopment())
+//    app.UseExceptionHandler("/Error");
 app.UseStaticFiles().UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
