@@ -2,23 +2,15 @@ using File_Transfer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<FileTransfareService>();
+builder.Services.AddRazorPages()
+    .Services.AddServerSideBlazor()
+    .Services.AddSingleton<FileTransfareService>();
 
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
-{
     app.UseExceptionHandler("/Error");
-}
-
-
-app.UseStaticFiles();
-
-app.UseRouting();
-
+app.UseStaticFiles().UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

@@ -5,7 +5,6 @@
         background-color: #ccc;
         transition: 0.2s ease-in-out;
     }
-
     textarea {
         resize: none;
     }
@@ -146,32 +145,26 @@
 {
     [Parameter]
     public string? directory { get; set; }
-    private List<string> Files { get; set; } = new();
+    private List<string?> Files { get; set; } = new();
     private string TextFile { get; set; } = string.Empty;
     private bool isPreview { get; set; } = false;
-    string FilePreviewPath { get; set; }
-    string FilePreviewName { get; set; }
+    string? FilePreviewPath { get; set; }
+    string? FilePreviewName { get; set; }
 
     protected override void OnInitialized()  =>
     Files = FileTransfareService.GetFiles(directory
         ?? throw new NullReferenceException("Could not find directory please create it!"));
-
     private void DeleteFile(string _file) 
     {
         File.Delete(_file);
         NavigationManager.NavigateTo($"FileTransfare/Folders/{directory}", true);
     }
-
-    private void PreviewFile(string _file)
-    {
-        FilePreviewPath = Path.GetFullPath(_file);
-        FilePreviewName = Path.GetFileName(_file);
-        TextFile = File.ReadAllText(_file);
-        isPreview = true;
-    }
-
+        private void PreviewFile(string _file) 
+    => (FilePreviewPath, FilePreviewName, TextFile, isPreview) 
+    = (Path.GetFullPath(_file), Path.GetFileName(_file), File.ReadAllText(_file), true);
     private void SaveFile()
     {
+        if (FilePreviewPath is not null)
         File.WriteAllText(FilePreviewPath, TextFile);
         isPreview = false;
     }

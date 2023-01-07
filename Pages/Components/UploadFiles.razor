@@ -53,7 +53,7 @@
 @code {
     private bool isUpload { get; set; }
     private string? SelectedDir { get; set; }
-    private List<string> directories = Array.Empty<string>().AsList();
+    private List<string?> directories = Array.Empty<string?>().AsList();
     private string? Error { get; set; } = string.Empty;
     IReadOnlyList<IBrowserFile> SelectedImage = Array.Empty<IBrowserFile>();
 
@@ -61,7 +61,7 @@
     => RetrieveDirectories();
 
     private void RetrieveDirectories() => directories = FileTransfareService.GetDirectories()
-    ?? Array.Empty<string>().AsList();
+    ?? Array.Empty<string?>().AsList();
 
     private void OnInputFileChange(InputFileChangeEventArgs e)
     {
@@ -79,7 +79,7 @@
             {
                 using var stream = file.OpenReadStream(Int64.MaxValue);
                 SelectedDir = file.ContentType.Split("/")[0] + 's';
-                string baseDir = $"{env.WebRootPath}/Sharedfiles/{SelectedDir}";
+                var baseDir = $"{env.WebRootPath}/Sharedfiles/{SelectedDir}";
 
                 if (!Directory.Exists(SelectedDir))
                 {

@@ -33,7 +33,7 @@
 </div>
 
 @code {
-    private List<string> Directories { get; set; } = new List<string>();
+    private List<string?> Directories { get; set; } = new ();
     protected override void OnInitialized() =>
         Directories = FileTransfareService.GetDirectories();
 }
