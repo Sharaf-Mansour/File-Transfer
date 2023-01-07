@@ -1,171 +1,173 @@
 ﻿@page "/FileTransfare/Folders/{directory}"
 
 <style>
-    a:hover {
-        background-color: #ccc;
-        transition: 0.2s ease-in-out;
-    }
-    textarea {
-        resize: none;
-    }
+  a:hover {
+    background-color: #ccc;
+    transition: 0.2s ease-in-out;
+  }
+
+  textarea {
+    resize: none;
+  }
 </style>
 
 <section class="p-4">
-    <header class="d-flex justify-content-between align-items-center">
-        <h3 class="text-capitalize h1">Directory: <span class="text-primary">@directory</span></h3>
-        <a class="btn btn-secondary px-4" href="/">Back</a>
-    </header>
+  <header class="d-flex justify-content-between align-items-center">
+    <h3 class="text-capitalize h1">Directory: <span class="text-primary">@directory</span></h3>
+    <a class="btn btn-secondary px-4" href="/">Back</a>
+  </header>
 
-    @if (Files?.Count is null or 0)
-    {
-        <p>There are no files to show.</p>
-    }
-    else
-    {
-        <ul class="d-flex flex-wrap align-items-center w-100 gap-4 mt-5 list-unstyled">
-            @foreach (var file in Files)
-            {
-                @if (directory is "Images")
-                {
-                    <li class="d-flex align-items-center flex-column gap-2">
-                        <a class="shadow-sm text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3"
-                            href="SharedFiles/@directory/@file">
-                            <img class="w-100" height="300" src="SharedFiles/@directory/@file" alt="@(file ?? "Image has a problem")" loading="lazy" />
-                        </a>
-                        <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
-                            <a class="btn btn-success flex-grow-1"
-                                download
-                                href="SharedFiles/@directory/@file">
-                                <span class="oi oi-cloud-download"></span>
-                                <span>Download</span>
-                            </a>
-                            <button class="btn btn-danger flex-grow-1" @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
-                                <span class="oi oi-delete"></span>
-                                <span>Delete</span>
-                            </button>
-                        </div>
-                    </li>
-                }
-                else if (directory is "Videos")
-                {
-                    <li class="d-flex align-items-center flex-column gap-2">
-                        <a class="shadow-sm text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3"
-                            href="SharedFiles/@directory/@file">
-                            <video width="300" controls src="SharedFiles/@directory/@file"></video>
-                        </a>
-                        <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
-                            <a class="btn btn-success flex-grow-1"
-                                download
-                                href="SharedFiles/@directory/@file">
-                                <span class="oi oi-cloud-download"></span>
-                                <span>Download</span>
-                            </a>
-                            <button class="btn btn-danger flex-grow-1" @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
-                                <span class="oi oi-delete"></span>
-                                <span>Delete</span>
-                            </button>
-                        </div>
-                    </li>
-                }
-                else if (directory is "Audios")
-                {
-                    <li class="w-25 d-flex align-items-center flex-column gap-2">
-                        <a class="shadow-sm card-link text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3"
-                            href="SharedFiles/@directory/@file">
-                            <audio class="w-100" controls src="SharedFiles/@directory/@file"></audio>
-                        </a>
-                        <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
-                            <a class="btn btn-success flex-grow-1"
-                                download
-                                href="SharedFiles/@directory/@file">
-                                <span class="oi oi-cloud-download"></span>
-                                <span>Download</span>
-                            </a>
-                            <button class="btn btn-danger flex-grow-1" @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
-                                <span class="oi oi-delete"></span>
-                                <span>Delete</span>
-                            </button>
-                        </div>
-                    </li>
-                }
-                else
-                {
-                    <li class="my-5 card d-flex align-items-center flex-column gap-2">
-                        <a class="w-100 shadow-sm card-link text-black rounded-2 p-4 text-decoration-none d-flex align-items-baseline gap-3 pe-5"
-                            href="SharedFiles/@directory/@file">
-                            <span class="oi oi-file"></span>
-                            <span class="card-text">@file</span>
-                        </a>
-                        <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
-                            <a class="btn btn-success flex-grow-1"
-                                download
-                                href="SharedFiles/@directory/@file">
-                                <span class="oi oi-cloud-download"></span>
-                                <span>Download</span>
-                            </a>
-                            <button class="btn btn-danger flex-grow-1" @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
-                                <span class="oi oi-delete"></span>
-                                <span>Delete</span>
-                            </button>
-                            <button class="btn btn-secondary flex-grow-1" @onclick="@(() => PreviewFile($"wwwroot/SharedFiles/{directory}/{file}"))">
-                                <span class="oi oi-spreadsheet"></span>
-                                <span>Preview</span>
-                            </button>
-                        </div>
-                    </li>
-                }
-            }
-        </ul>
-    }
-    @if (isPreview)
-    {
-        <div class="back-blur position-absolute w-100 min-vh-100 top-0 end-0 shadow-lg">
-            @*Box-Back*@
-            <div class="w-100 min-vh-100 bg-black bg-opacity-25 position-fixed top-0 start-0" @onclick="@(() => isPreview = false)"></div>
+  @if (Files?.Count is null or 0)
+  {
+    <p>There are no files to show.</p>
+  }
+  else
+  {
+    <ul class="d-flex flex-wrap align-items-center w-100 gap-4 mt-5 list-unstyled">
+      @foreach (var file in Files)
+      {
+        @if (directory is "Images")
+        {
+          <li class="d-flex align-items-center flex-column gap-2">
+            <a class="shadow-sm text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3"
+        href="SharedFiles/@directory/@file">
+              <img class="w-100" height="300" src="SharedFiles/@directory/@file" alt="@(file ?? "Image has a problem")"
+          loading="lazy" />
+            </a>
+            <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
+              <a class="btn btn-success flex-grow-1" download href="SharedFiles/@directory/@file">
+                <span class="oi oi-cloud-download"></span>
+                <span>Download</span>
+              </a>
+              <button class="btn btn-danger flex-grow-1"
+          @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
+                <span class="oi oi-delete"></span>
+                <span>Delete</span>
+              </button>
+            </div>
+          </li>
+        }
+        else if (directory is "Videos")
+        {
+          <li class="d-flex align-items-center flex-column gap-2">
+            <a class="shadow-sm text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3"
+        href="SharedFiles/@directory/@file">
+              <video width="300" controls src="SharedFiles/@directory/@file"></video>
+            </a>
+            <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
+              <a class="btn btn-success flex-grow-1" download href="SharedFiles/@directory/@file">
+                <span class="oi oi-cloud-download"></span>
+                <span>Download</span>
+              </a>
+              <button class="btn btn-danger flex-grow-1"
+          @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
+                <span class="oi oi-delete"></span>
+                <span>Delete</span>
+              </button>
+            </div>
+          </li>
+        }
+        else if (directory is "Audios")
+        {
+          <li class="w-25 d-flex align-items-center flex-column gap-2">
+            <a class="shadow-sm card-link text-black rounded-2 p-2 text-decoration-none d-flex align-items-baseline gap-3"
+        href="SharedFiles/@directory/@file">
+              <audio class="w-100" controls src="SharedFiles/@directory/@file"></audio>
+            </a>
+            <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
+              <a class="btn btn-success flex-grow-1" download href="SharedFiles/@directory/@file">
+                <span class="oi oi-cloud-download"></span>
+                <span>Download</span>
+              </a>
+              <button class="btn btn-danger flex-grow-1"
+          @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
+                <span class="oi oi-delete"></span>
+                <span>Delete</span>
+              </button>
+            </div>
+          </li>
+        }
+        else
+        {
+          <li class="my-5 card d-flex align-items-center flex-column gap-2">
+            <a class="w-100 shadow-sm card-link text-black rounded-2 p-4 text-decoration-none d-flex align-items-baseline gap-3 pe-5"
+        href="SharedFiles/@directory/@file">
+              <span class="oi oi-file"></span>
+              <span class="card-text">@file</span>
+            </a>
+            <div class="d-flex gap-2 align-items-center w-100 justify-content-center p-2">
+              <a class="btn btn-success flex-grow-1" download href="SharedFiles/@directory/@file">
+                <span class="oi oi-cloud-download"></span>
+                <span>Download</span>
+              </a>
+              <button class="btn btn-danger flex-grow-1"
+          @onclick="@(() => DeleteFile($"wwwroot/SharedFiles/{directory}/{file}"))">
+                <span class="oi oi-delete"></span>
+                <span>Delete</span>
+              </button>
+              <button class="btn btn-secondary flex-grow-1"
+          @onclick="@(() => PreviewFile($"wwwroot/SharedFiles/{directory}/{file}"))">
+                <span class="oi oi-spreadsheet"></span>
+                <span>Preview</span>
+              </button>
+            </div>
+          </li>
+        }
+      }
+    </ul>
+  }
+  @if (isPreview)
+  {
+    <div class="back-blur position-absolute w-100 min-vh-100 top-0 end-0 shadow-lg">
+      @*Box-Back*@
+      <div class="w-100 min-vh-100 bg-black bg-opacity-25 position-fixed top-0 start-0"
+      @onclick="@(() => isPreview = false)"></div>
 
-            @*Box-Content*@
-            <article class="form-control position-absolute h-75 w-75 overflow-auto start-50 top-50 translate-middle bg-white rounded-3 p-2">
-                <h3 class="text-center p-1">File: @FilePreviewName</h3>
-                <InputTextArea @bind-Value="@TextFile" class="card-body w-100 h-75 border border-2 rounded-2" contenteditable="true" />
-                <div class="d-flex align-items-center justify-content-end p-2 my-2 gap-3">
-                    <button class="btn btn-outline-success" @onclick="SaveFile">
-                        <span class="oi oi-data-transfer-upload"></span>
-                        <span>Save</span>
-                    </button>
-                    <button class="btn btn-danger" @onclick="@(() => isPreview = false)">
-                        <span class="oi oi-circle-x"></span>
-                        <span>Cancel</span>
-                    </button>
-                </div>
-            </article>
+      @*Box-Content*@
+      <article
+      class="form-control position-absolute h-75 w-75 overflow-auto start-50 top-50 translate-middle bg-white rounded-3 p-2">
+        <h3 class="text-center p-1">File: @FilePreviewName</h3>
+        <InputTextArea @bind-Value="@TextFile" class="card-body w-100 h-75 border border-2 rounded-2"
+        contenteditable="true" />
+        <div class="d-flex align-items-center justify-content-end p-2 my-2 gap-3">
+          <button class="btn btn-outline-success" @onclick="SaveFile">
+            <span class="oi oi-data-transfer-upload"></span>
+            <span>Save</span>
+          </button>
+          <button class="btn btn-danger" @onclick="@(() => isPreview = false)">
+            <span class="oi oi-circle-x"></span>
+            <span>Cancel</span>
+          </button>
         </div>
-    }
+      </article>
+    </div>
+  }
 </section>
 @code
 {
-    [Parameter]
-    public string? directory { get; set; }
-    private List<string?> Files { get; set; } = new();
-    private string TextFile { get; set; } = string.Empty;
-    private bool isPreview { get; set; } = false;
-    string? FilePreviewPath { get; set; }
-    string? FilePreviewName { get; set; }
+  [Parameter]
+  public string? directory { get; set; }
+  private List<string?> Files { get; set; } = new();
+  private string TextFile { get; set; } = string.Empty;
+  private bool isPreview { get; set; } = false;
+  string? FilePreviewPath { get; set; }
+  string? FilePreviewName { get; set; }
 
-    protected override void OnInitialized()  =>
-    Files = FileTransfareService.GetFiles(directory
-        ?? throw new NullReferenceException("Could not find directory please create it!"));
-    private void DeleteFile(string _file) 
-    {
-        File.Delete(_file);
-        NavigationManager.NavigateTo($"FileTransfare/Folders/{directory}", true);
-    }
-        private void PreviewFile(string _file) 
-    => (FilePreviewPath, FilePreviewName, TextFile, isPreview) 
-    = (Path.GetFullPath(_file), Path.GetFileName(_file), File.ReadAllText(_file), true);
-    private void SaveFile()
-    {
-        if (FilePreviewPath is not null)
-        File.WriteAllText(FilePreviewPath, TextFile);
-        isPreview = false;
-    }
+  protected override void OnInitialized() =>
+  Files = FileTransfareService.GetFiles(directory
+  ?? throw new NullReferenceException("Could not find directory please create it!"));
+  private void DeleteFile(string _file)
+  {
+    File.Delete(_file);
+    NavigationManager.NavigateTo($"FileTransfare/Folders/{directory}", true);
+  }
+  private void PreviewFile(string _file)
+  => (FilePreviewPath, FilePreviewName, TextFile, isPreview)
+  = (Path.GetFullPath(_file), Path.GetFileName(_file), File.ReadAllText(_file), true);
+  private void SaveFile()
+  {
+    if (FilePreviewPath is not null)
+      File.WriteAllText(FilePreviewPath, TextFile);
+    isPreview = false;
+  }
 }

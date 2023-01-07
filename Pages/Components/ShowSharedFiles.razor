@@ -2,10 +2,10 @@
 @page "/FileTransfare/Folders"
 
 <style>
-    li:hover {
-        background-color: #eee;
-        transition: 0.2s ease-in-out;
-    }
+  li:hover {
+    background-color: #eee;
+    transition: 0.2s ease-in-out;
+  }
 </style>
 
 <h1 class="text-center text-secondary fw-bold text-xxl-center">Folders and Files</h1>
@@ -16,16 +16,16 @@
     <p>There are no directories to show.</p>
   }
   else
-  { 
+  {
     <ul class="d-flex gap-3 flex-wrap justify-content-around mt-5 list-unstyled">
       @foreach (var directory in Directories)
       {
         <li class="my-5 card">
-            <a class="shadow-sm card-link text-capitalize text-black rounded-2 p-4 text-decoration-none d-flex align-items-baseline gap-3 pe-5" 
-                href="FileTransfare/Folders/@directory">
-                <span class="oi oi-folder"></span>
-                <span class="card-text">@directory</span>  
-            </a>
+          <a class="shadow-sm card-link text-capitalize text-black rounded-2 p-4 text-decoration-none d-flex align-items-baseline gap-3 pe-5"
+        href="FileTransfare/Folders/@directory">
+            <span class="oi oi-folder"></span>
+            <span class="card-text">@directory</span>
+          </a>
         </li>
       }
     </ul>
@@ -33,7 +33,7 @@
 </div>
 
 @code {
-    private List<string?> Directories { get; set; } = new ();
-    protected override void OnInitialized() =>
-        Directories = FileTransfareService.GetDirectories();
+  private List<string?> Directories { get; set; } = new();
+  protected override void OnInitialized() =>
+  Directories = FileTransfareService.GetDirectories();
 }
