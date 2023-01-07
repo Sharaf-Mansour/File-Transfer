@@ -15,16 +15,10 @@
 		<RootNamespace>File_Transfer</RootNamespace>
 	</PropertyGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="npm run buildcss" />
-	</Target>
-
 	<ItemGroup>
 		<Folder Include="wwwroot\SharedFiles\Audios\" />
 		<Folder Include="wwwroot\SharedFiles\Images\" />
 		<Folder Include="wwwroot\SharedFiles\Applications\" />
-		<Folder Include="wwwroot\SharedFiles\Texts\" />
-		<Folder Include="wwwroot\SharedFiles\Videos\" />
 	</ItemGroup>
 
 </Project>

@@ -435,11 +435,11 @@ video {
 .bg-opacity-25{
   --tw-bg-opacity: 0.25;
 }
-.p-2{
-  padding: 0.5rem;
-}
 .p-4{
   padding: 1rem;
+}
+.p-2{
+  padding: 0.5rem;
 }
 .p-3{
   padding: 0.75rem;
