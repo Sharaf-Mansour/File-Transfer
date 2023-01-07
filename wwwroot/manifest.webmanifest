@@ -1,0 +1,15 @@
+{
+  "name": "Local Drive",
+  "short_name": "Local Drive",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#03173d",
+  "icons": [
+    {
+      "src": "FileUploader.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

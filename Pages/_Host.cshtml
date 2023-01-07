@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="File Transfer.styles.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link rel="icon" type="image/png" href="FileUploader.png"/>
+    <link rel="apple-touch-icon" sizes="512x512" href="FileUploader.png" integrity="" />
+    <link href="manifest.webmanifest" rel="manifest" integrity="" />
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body>
@@ -30,5 +32,7 @@
     </div>
 
     <script src="_framework/blazor.server.js"></script>
+     <script integrity="">navigator.serviceWorker.register('service-worker.js');</script>
+
 </body>
 </html>
