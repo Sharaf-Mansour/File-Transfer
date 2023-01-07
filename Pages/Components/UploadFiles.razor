@@ -6,98 +6,99 @@
 <PageTitle>Upload Files</PageTitle>
 
 <style>
-    button {
-        bottom: 50px;
-        right: 50px;
-    }
+  button {
+    bottom: 50px;
+    right: 50px;
+  }
 
-    .back-blur {
-        z-index: 5;
-    }
+  .back-blur {
+    z-index: 5;
+  }
 </style>
 
 
-@if(isUpload)
+@if (isUpload)
 {
-    <div class="back-blur position-absolute w-100 min-vh-100 top-0 end-0 shadow-lg">
-        @*Box-Back*@
-        <div class="w-100 min-vh-100 bg-black bg-opacity-25 position-fixed top-0 start-0" @onclick="@(() => isUpload = false)"></div>
+  <div class="back-blur position-absolute w-100 min-vh-100 top-0 end-0 shadow-lg">
+    @*Box-Back*@
+    <div class="w-100 min-vh-100 bg-black bg-opacity-25 position-fixed top-0 start-0"
+    @onclick="@(() => isUpload = false)"></div>
 
-        @*Box-Content*@
-        <div class="w-50 position-absolute start-50 top-50 translate-middle bg-white rounded-3 p-4">
-            <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
-                <label for="choose-file" class="form-label">
-                    <InputFile OnChange="OnInputFileChange" id="choose-file" class="form-control" multiple />
-                </label>
-                <div class="d-flex flex-column flex-sm-row gap-3">
-                    <button class="btn btn-primary p-2 px-4" @onclick="Upload">Upload</button>
-                    <button class="btn btn-danger p-2 px-4" @onclick="Cancel">Cancel</button>
-                </div>
-                @if(!string.IsNullOrEmpty(Error))
-                {
-                    <br>
-                    <p>@Error</p>
-                }
-            </div>
+    @*Box-Content*@
+    <div class="position-absolute start-50 top-50 translate-middle bg-white rounded-3 p-4">
+      <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
+        <label for="choose-file" class="form-label">
+          <InputFile OnChange="OnInputFileChange" id="choose-file" class="form-control" multiple />
+        </label>
+        <div class="d-flex flex-column flex-sm-row gap-3">
+          <button class="btn btn-primary p-2 px-4" @onclick="Upload">Upload</button>
+          <button class="btn btn-danger p-2 px-4" @onclick="Cancel">Cancel</button>
         </div>
+        @if (!string.IsNullOrEmpty(Error))
+        {
+          <br>
+          <p>@Error</p>
+        }
+      </div>
     </div>
+  </div>
 }
 
 <button class="btn btn-primary position-fixed py-2 px-3 py-lg-3 px-lg-4 rounded-circle"
-    @onclick="@(() => isUpload = true)">
-    <big>
-        <span class="oi oi-cloud-upload"></span>
-    </big>
+  @onclick="@(() => isUpload = true)">
+  <big>
+    <span class="oi oi-cloud-upload"></span>
+  </big>
 </button>
 
 @code {
-    private bool isUpload { get; set; }
-    private string? SelectedDir { get; set; }
-    private List<string?> directories = Array.Empty<string?>().AsList();
-    private string? Error { get; set; } = string.Empty;
-    IReadOnlyList<IBrowserFile> SelectedImage = Array.Empty<IBrowserFile>();
+  private bool isUpload { get; set; }
+  private string? SelectedDir { get; set; }
+  private List<string?> directories = Array.Empty<string?>().AsList();
+  private string? Error { get; set; } = string.Empty;
+  IReadOnlyList<IBrowserFile> SelectedImage = Array.Empty<IBrowserFile>();
 
-    protected override void OnInitialized()
-    => RetrieveDirectories();
+  protected override void OnInitialized()
+  => RetrieveDirectories();
 
-    private void RetrieveDirectories() => directories = FileTransfareService.GetDirectories()
-    ?? Array.Empty<string?>().AsList();
+  private void RetrieveDirectories() => directories = FileTransfareService.GetDirectories()
+  ?? Array.Empty<string?>().AsList();
 
-    private void OnInputFileChange(InputFileChangeEventArgs e)
+  private void OnInputFileChange(InputFileChangeEventArgs e)
+  {
+    SelectedImage = e.GetMultipleFiles(Int32.MaxValue);
+    StateHasChanged();
+  }
+
+  private void Cancel() => isUpload = false;
+
+  private async Task Upload()
+  {
+    try
     {
-        SelectedImage = e.GetMultipleFiles(Int32.MaxValue);
+      foreach (var file in SelectedImage)
+      {
+        using var stream = file.OpenReadStream(Int64.MaxValue);
+        SelectedDir = file.ContentType.Split("/")[0] + 's';
+        var baseDir = $"{env.WebRootPath}/Sharedfiles/{SelectedDir}";
+
+        if (!Directory.Exists(SelectedDir))
+        {
+          Directory.CreateDirectory(baseDir);
+          RetrieveDirectories();
+        }
+
+        using var fs = File.Create($"{baseDir}/{file.Name}");
+        await stream.CopyToAsync(fs);
+        fs.Close();
         StateHasChanged();
+      }
     }
-
-    private void Cancel()=>  isUpload = false;
-
-    private async Task Upload()
+    catch (Exception ex)
     {
-        try
-        {
-            foreach (var file in SelectedImage)
-            {
-                using var stream = file.OpenReadStream(Int64.MaxValue);
-                SelectedDir = file.ContentType.Split("/")[0] + 's';
-                var baseDir = $"{env.WebRootPath}/Sharedfiles/{SelectedDir}";
-
-                if (!Directory.Exists(SelectedDir))
-                {
-                    Directory.CreateDirectory(baseDir);
-                    RetrieveDirectories();
-                }
-
-                using var fs = File.Create($"{baseDir}/{file.Name}");
-                await stream.CopyToAsync(fs);
-                fs.Close();
-                StateHasChanged();
-            }
-        }
-        catch(Exception ex)
-        {
-            throw ex;   
-        }
-        isUpload = false;
-        NavigationManager.NavigateTo("/", true);
+      throw ex;
     }
+    isUpload = false;
+    NavigationManager.NavigateTo("/", true);
+  }
 }
