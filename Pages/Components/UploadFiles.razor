@@ -39,6 +39,7 @@
           <br>
           <p>@Error</p>
         }
+        @SelectedDir
       </div>
     </div>
   </div>
@@ -79,7 +80,11 @@
       foreach (var file in SelectedImage)
       {
         using var stream = file.OpenReadStream(Int64.MaxValue);
-        SelectedDir = file.ContentType.Split("/")[0] + 's';
+        System.Console.WriteLine(file.ContentType);
+        SelectedDir = file.ContentType.Split("/")[0];
+        if (string.IsNullOrEmpty(SelectedDir))
+          SelectedDir = file.Name.Split(".").Last();
+
         var baseDir = $"{env.WebRootPath}/Sharedfiles/{SelectedDir}";
 
         if (!Directory.Exists(SelectedDir))
