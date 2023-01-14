@@ -1,7 +1,6 @@
 @page "/FileTransfare/UploadFiles"
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
 @using System.IO
-@inject NavigationManager NavigationManager
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
 
 <PageTitle>Upload Files</PageTitle>
 
@@ -39,7 +38,6 @@
           <br>
           <p>@Error</p>
         }
-        @SelectedDir
       </div>
     </div>
   </div>
@@ -53,57 +51,58 @@
 </button>
 
 @code {
-  private bool isUpload { get; set; }
-  private string? SelectedDir { get; set; }
-  private List<string?> directories = Array.Empty<string?>().AsList();
-  private string? Error { get; set; } = string.Empty;
-  IReadOnlyList<IBrowserFile> SelectedImage = Array.Empty<IBrowserFile>();
+    private bool isUpload { get; set; }
+    private string? SelectedDir { get; set; }
+    private List<string?> directories = Array.Empty<string?>().AsList();
+    private string? Error { get; set; } = string.Empty;
+    IReadOnlyList<IBrowserFile> SelectedImage = Array.Empty<IBrowserFile>();
 
-  protected override void OnInitialized()
-  => RetrieveDirectories();
+    protected override void OnInitialized()
+    => RetrieveDirectories();
 
-  private void RetrieveDirectories() => directories = FileTransfareService.GetDirectories()
-  ?? Array.Empty<string?>().AsList();
+    private void RetrieveDirectories() => directories = FileTransfareService.GetDirectories()
+    ?? Array.Empty<string?>().AsList();
 
-  private void OnInputFileChange(InputFileChangeEventArgs e)
-  {
-    SelectedImage = e.GetMultipleFiles(Int32.MaxValue);
-    StateHasChanged();
-  }
-
-  private void Cancel() => isUpload = false;
-
-  private async Task Upload()
-  {
-    try
+    private void OnInputFileChange(InputFileChangeEventArgs e)
     {
-      foreach (var file in SelectedImage)
-      {
-        using var stream = file.OpenReadStream(Int64.MaxValue);
-        System.Console.WriteLine(file.ContentType);
-        SelectedDir = file.ContentType.Split("/")[0];
-        if (string.IsNullOrEmpty(SelectedDir))
-          SelectedDir = file.Name.Split(".").Last();
-
-        var baseDir = $"{env.WebRootPath}/Sharedfiles/{SelectedDir}";
-
-        if (!Directory.Exists(SelectedDir))
-        {
-          Directory.CreateDirectory(baseDir);
-          RetrieveDirectories();
-        }
-
-        using var fs = File.Create($"{baseDir}/{file.Name}");
-        await stream.CopyToAsync(fs);
-        fs.Close();
+        SelectedImage = e.GetMultipleFiles(Int32.MaxValue);
         StateHasChanged();
-      }
     }
-    catch (Exception ex)
+
+    private void Cancel() => isUpload = false;
+
+    private async Task Upload()
     {
-      throw ex;
-    }
-    isUpload = false;
-    NavigationManager.NavigateTo("/", true);
+        try
+        {
+            foreach (var file in SelectedImage)
+            {
+                using var stream = file.OpenReadStream(Int64.MaxValue);
+                System.Console.WriteLine(file.ContentType);
+                SelectedDir = file.ContentType.Split("/")[0];
+                if (string.IsNullOrEmpty(SelectedDir))
+                    SelectedDir = file.Name.Split(".").Last();
+
+                var baseDir = $"{env.WebRootPath}/Sharedfiles/{SelectedDir}";
+
+                if (!Directory.Exists(SelectedDir))
+                {
+                    Directory.CreateDirectory(baseDir);
+                    RetrieveDirectories();
+                }
+
+                using var fs = File.Create($"{baseDir}/{file.Name}");
+                await stream.CopyToAsync(fs);
+                fs.Close();
+                StateHasChanged();
+
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+        isUpload = false;
+      NavigationManager.NavigateTo("/", true);
   }
 }

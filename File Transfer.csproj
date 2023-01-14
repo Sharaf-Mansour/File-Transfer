@@ -18,23 +18,26 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="wwwroot\SharedFiles\Applications\**" />
+	  <Compile Remove="wwwroot\SharedFiles\Audios\**" />
+	  <Compile Remove="wwwroot\SharedFiles\Images\**" />
+	  <Content Remove="wwwroot\SharedFiles\Applications\**" />
+	  <Content Remove="wwwroot\SharedFiles\Audios\**" />
+	  <Content Remove="wwwroot\SharedFiles\Images\**" />
+	  <EmbeddedResource Remove="wwwroot\SharedFiles\Applications\**" />
+	  <EmbeddedResource Remove="wwwroot\SharedFiles\Audios\**" />
+	  <EmbeddedResource Remove="wwwroot\SharedFiles\Images\**" />
+	  <None Remove="wwwroot\SharedFiles\Applications\**" />
+	  <None Remove="wwwroot\SharedFiles\Audios\**" />
+	  <None Remove="wwwroot\SharedFiles\Images\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Include="favicon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-
-
-		<Folder Include="wwwroot\SharedFiles\Audios\" />
-		<Folder Include="wwwroot\SharedFiles\Images\" />
-		<Folder Include="wwwroot\SharedFiles\Applications\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="..\..\..\..\Downloads\sharaf\sharaf\sharaf512.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
 	</ItemGroup>
 
 </Project>
